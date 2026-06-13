@@ -1,0 +1,14 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+    <script>
+const p = new URLSearchParams(location.search);
+localStorage.setItem('token',  p.get('token'));
+localStorage.setItem('name',   p.get('name'));
+localStorage.setItem('email',  p.get('email'));
+localStorage.setItem('role',   p.get('role'));
+localStorage.setItem('userId', p.get('userId'));
+window.location.href = p.get('role')==='Admin' ? '/admin.html' : '/courses.html';
+    </script>
+</body>
+</html>

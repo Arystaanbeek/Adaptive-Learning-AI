@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход — AdaptiveLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[data-theme="dark"] {
+  --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+  --border: rgba(255,255,255,.08); --text: #e8eaf0; --muted: #7b7f96;
+  --accent: #6c63ff; --accent2: #ff6b9d; --green: #22d3a5; --input-bg: #22263a;
+}
+[data-theme="light"] {
+  --bg: #f4f6ff; --surface: #ffffff; --surface2: #eef0fa;
+  --border: rgba(0,0,0,.08); --text: #1a1d27; --muted: #6b7280;
+  --accent: #6c63ff; --accent2: #ff6b9d; --green: #059669; --input-bg: #f4f6ff;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text);
+  min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; transition: background .3s, color .3s; }
+
+.left-panel { background: linear-gradient(145deg,#1a1060 0%,#2d1b6e 50%,#1a0a3e 100%);
+  display: flex; flex-direction: column; padding: 40px; position: relative; overflow: hidden; }
+.left-panel::before { content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 30% 60%,rgba(108,99,255,.3) 0%,transparent 60%),
+              radial-gradient(ellipse at 80% 20%,rgba(255,107,157,.2) 0%,transparent 50%); }
+.left-grid { position:absolute; inset:0; opacity:.04;
+  background-image: linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size: 40px 40px; }
+.left-content { position:relative; z-index:1; display:flex; flex-direction:column; height:100%; }
+.left-logo { display:flex; align-items:center; gap:10px; margin-bottom:auto; }
+.logo-box { width:36px; height:36px; background:var(--accent); border-radius:10px;
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.logo-label { font-weight:800; font-size:1rem; color:#fff; }
+.left-main { margin: auto 0; }
+.left-title { font-size:2rem; font-weight:900; color:#fff; line-height:1.2; margin-bottom:14px; }
+.left-title span { color:#fbbf24; }
+.left-desc { font-size:15px; color:rgba(255,255,255,.65); line-height:1.7; margin-bottom:32px; }
+
+/* Demo accounts */
+.demo-accounts { display:flex; flex-direction:column; gap:10px; }
+.demo-account { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+  border-radius:12px; padding:12px 14px; cursor:pointer; transition:all .15s; }
+.demo-account:hover { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.25); }
+.demo-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.5);
+  text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.demo-row { display:flex; align-items:center; justify-content:space-between; }
+.demo-name { font-size:13px; font-weight:600; color:#fff; }
+.demo-creds { font-size:11px; color:rgba(255,255,255,.5); font-family:monospace; }
+.demo-style { font-size:11px; padding:2px 8px; border-radius:20px; font-weight:600; }
+
+.left-bottom { margin-top:auto; padding-top:24px; border-top:1px solid rgba(255,255,255,.08); }
+.left-stats { display:flex; gap:24px; }
+.left-stat-num { font-size:1.3rem; font-weight:800; color:#fff; }
+.left-stat-lbl { font-size:11px; color:rgba(255,255,255,.5); }
+
+.btn-google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 11px;
+        font-size: 15px;
+        font-weight: 600;
+        border: 1.5px solid var(--border);
+        background: var(--surface2);
+        color: var(--text);
+        text-decoration: none;
+        margin-top: 10px;
+        transition: all .15s;
+        font-family: inherit;
+    }
+
+    .btn-google:hover {
+            border-color: var(--accent);
+            background: var(--input-bg);
+        }
+.right-panel { display:flex; align-items:center; justify-content:center; padding:40px; overflow-y:auto; }
+.form-wrap { width:100%; max-width:400px; }
+.form-header { margin-bottom:32px; }
+.form-title { font-size:1.6rem; font-weight:800; margin-bottom:6px; }
+.form-sub { font-size:14px; color:var(--muted); }
+.field { margin-bottom:16px; }
+.field label { font-size:12px; font-weight:700; color:var(--muted); display:block;
+  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em; }
+.input-wrap { position:relative; }
+.input { width:100%; background:var(--input-bg); border:1.5px solid var(--border);
+  border-radius:11px; padding:12px 16px; color:var(--text); font-size:15px;
+  font-family:inherit; outline:none; transition:border .15s, box-shadow .15s; }
+.input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,.12); }
+.input::placeholder { color:var(--muted); }
+.pwd-eye { position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  color:var(--muted); cursor:pointer; font-size:1.05rem; transition:color .15s; }
+.pwd-eye:hover { color:var(--text); }
+.alert { padding:11px 14px; border-radius:10px; font-size:13px; margin-bottom:16px; display:none; }
+.alert-err { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); color:#f87171; }
+.btn-submit { width:100%; padding:13px; border-radius:11px; font-size:15px; font-weight:700;
+  font-family:inherit; cursor:pointer; border:none;
+  background:linear-gradient(135deg,var(--accent),#8b5cf6); color:#fff; transition:all .2s;
+  display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-submit:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(108,99,255,.35); }
+.btn-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
+.divider { display:flex; align-items:center; gap:12px; margin:20px 0; }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.divider span { font-size:12px; color:var(--muted); white-space:nowrap; }
+.bottom-link { text-align:center; font-size:14px; color:var(--muted); }
+.bottom-link a { color:var(--accent); font-weight:600; text-decoration:none; }
+.theme-btn { position:fixed; top:16px; right:16px; width:36px; height:36px; background:var(--surface);
+  border:1px solid var(--border); border-radius:9px; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; color:var(--muted); font-size:1rem; z-index:100; }
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.spin { width:16px; height:16px; border:2px solid rgba(255,255,255,.25); border-top-color:#fff;
+  border-radius:50%; animation:_sp .7s linear infinite; }
+@keyframes _sp { to { transform:rotate(360deg) } }
+@media (max-width:768px) { body { grid-template-columns:1fr; } .left-panel { display:none; } .right-panel { padding:60px 24px 40px; } }
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()" id="theme-btn">
+  <i class="bi bi-sun" id="theme-icon"></i>
+</button>
+
+<!-- LEFT -->
+<div class="left-panel">
+  <div class="left-grid"></div>
+  <div class="left-content">
+    <div class="left-logo">
+      <div class="logo-box">🎓</div>
+      <span class="logo-label">AdaptiveLearn AI</span>
+    </div>
+    <div class="left-main">
+      <h2 class="left-title">С возвращением<br>на <span>платформу</span></h2>
+      <p class="left-desc">Войди и продолжи своё адаптивное обучение. AI помнит твой прогресс и стиль восприятия.</p>
+
+      <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">
+        Тестовые аккаунты
+      </div>
+      <div class="demo-accounts">
+        <div class="demo-account" onclick="fillLogin('admin@adaptive.kz','admin123')">
+          <div class="demo-label"><i class="bi bi-shield-check" style="color:#fbbf24"></i>Администратор</div>
+          <div class="demo-row">
+            <span class="demo-name">Администратор</span>
+            <span class="demo-creds">admin@adaptive.kz / admin123</span>
+          </div>
+        </div>
+        <div class="demo-account" onclick="fillLogin('aliya@test.kz','test123')">
+          <div class="demo-label"><i class="bi bi-star-fill" style="color:#22d3a5"></i>Студент — Distinction</div>
+          <div class="demo-row">
+            <span class="demo-name">Алия Назарова</span>
+            <span class="demo-creds">aliya@test.kz / test123</span>
+          </div>
+        </div>
+        <div class="demo-account" onclick="fillLogin('nurlan@test.kz','test123')">
+          <div class="demo-label"><i class="bi bi-exclamation-triangle-fill" style="color:#f87171"></i>Студент — Fail (риск)</div>
+          <div class="demo-row">
+            <span class="demo-name">Нурлан Бекжанов</span>
+            <span class="demo-creds">nurlan@test.kz / test123</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="left-bottom">
+      <div class="left-stats">
+        <div><div class="left-stat-num">6</div><div class="left-stat-lbl">Курсов</div></div>
+        <div><div class="left-stat-num">8</div><div class="left-stat-lbl">Студентов</div></div>
+        <div><div class="left-stat-num">0.95</div><div class="left-stat-lbl">ROC-AUC</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right-panel">
+    <div class="form-wrap">
+        <div class="form-header">
+            <div class="form-title">Вход в аккаунт</div>
+            <div class="form-sub">Введите свои данные или выберите тестовый аккаунт</div>
+        </div>
+
+        <div class="alert alert-err" id="err"></div>
+
+        <div class="field">
+            <label>Email</label>
+            <input class="input" type="email" id="email" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="field">
+            <label>Пароль</label>
+            <div class="input-wrap">
+                <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px">
+                <span class="pwd-eye" onclick="togglePwd()"><i class="bi bi-eye" id="eye-icon"></i></span>
+            </div>
+        </div>
+
+        <button class="btn-submit" id="btn" onclick="doLogin()">
+            <i class="bi bi-box-arrow-in-right"></i>Войти
+        </button>
+        <a href="http://localhost:5000/api/auth/google/login" class="btn-google">
+            <svg width="18" height="18" viewBox="0 0 18 18">
+                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" />
+                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
+                <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" />
+                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" />
+            </svg>
+            Войти через Google
+        </a>
+        <div class="divider"><span>нет аккаунта?</span></div>
+        <div class="bottom-link"><a href="/register.html">Создать аккаунт →</a></div>
+    </div>
+</div>
+
+<script>
+const _html = document.documentElement;
+function applyTheme(t) {
+  _html.setAttribute('data-theme', t); localStorage.setItem('theme', t);
+  document.getElementById('theme-icon').className = t==='dark'?'bi bi-sun':'bi bi-moon';
+}
+function toggleTheme() { applyTheme(_html.getAttribute('data-theme')==='dark'?'light':'dark'); }
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+function togglePwd() {
+  const inp = document.getElementById('password');
+  const ico = document.getElementById('eye-icon');
+  if (inp.type==='password') { inp.type='text'; ico.className='bi bi-eye-slash'; }
+  else { inp.type='password'; ico.className='bi bi-eye'; }
+}
+
+function fillLogin(email, pwd) {
+  document.getElementById('email').value    = email;
+  document.getElementById('password').value = pwd;
+  document.getElementById('email').focus();
+}
+
+async function doLogin() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl    = document.getElementById('err');
+  const btn      = document.getElementById('btn');
+  errEl.style.display = 'none';
+
+  if (!email || !password) { errEl.textContent='Заполните все поля'; errEl.style.display='block'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Вход...';
+
+  try {
+    const res  = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error||'Неверный email или пароль'; errEl.style.display='block'; return; }
+    localStorage.setItem('token',  data.token);
+    localStorage.setItem('name',   data.name);
+    localStorage.setItem('email',  data.email);
+    localStorage.setItem('role',   data.role);
+    localStorage.setItem('userId', data.userId);
+    window.location.href = data.role==='Admin' ? '/admin.html' : '/courses.html';
+  } catch {
+    errEl.textContent = 'Сервер недоступен'; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i>Войти';
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>

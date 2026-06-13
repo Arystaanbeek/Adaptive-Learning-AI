@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# AI models
+*.pkl
+*.joblib
+
+# Dataset
+*.csv

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Каталог курсов — AdaptiveLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>/* ── SHARED DESIGN SYSTEM ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[data-theme="dark"] {
+  --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a; --surface3:#2a2f45;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.12);
+  --text:#e8eaf0; --muted:#7b7f96; --muted2:#9ca3b8;
+  --accent:#6c63ff; --accent-hover:#7c75ff; --accent2:#ff6b9d;
+  --green:#22d3a5; --yellow:#fbbf24; --red:#f87171; --blue:#60a5fa;
+  --card-bg:#1a1d27; --input-bg:#22263a; --overlay:rgba(0,0,0,.6);
+}
+[data-theme="light"] {
+  --bg:#f4f6ff; --surface:#ffffff; --surface2:#eef0fa; --surface3:#e5e9f8;
+  --border:rgba(0,0,0,.08); --border2:rgba(0,0,0,.12);
+  --text:#1a1d27; --muted:#6b7280; --muted2:#9ca3af;
+  --accent:#6c63ff; --accent-hover:#7c75ff; --accent2:#ff6b9d;
+  --green:#059669; --yellow:#d97706; --red:#dc2626; --blue:#2563eb;
+  --card-bg:#ffffff; --input-bg:#f4f6ff; --overlay:rgba(255,255,255,.6);
+}
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); transition:background .3s,color .3s; }
+
+/* SIDEBAR */
+.sidebar { width:240px; min-height:100vh; background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; position:fixed; left:0; top:0; z-index:100; padding:20px 0; }
+.sidebar-logo { padding:0 16px 24px; display:flex; align-items:center; gap:10px; text-decoration:none; }
+.logo-box { width:34px; height:34px; background:var(--accent); border-radius:9px;
+  display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+.logo-label { font-weight:800; font-size:.95rem; color:var(--text); }
+.nav-group { padding:0 10px; margin-bottom:6px; }
+.nav-group-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.08em; padding:0 8px; margin-bottom:4px; display:block; }
+.nav-link { display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:10px;
+  font-size:13.5px; font-weight:500; color:var(--muted); cursor:pointer; transition:all .15s;
+  text-decoration:none; margin-bottom:2px; white-space:nowrap; }
+.nav-link:hover { background:var(--surface2); color:var(--text); }
+.nav-link.active { background:var(--accent); color:#fff; }
+.nav-link i { font-size:1rem; flex-shrink:0; }
+.nav-badge { margin-left:auto; background:var(--accent2); color:#fff;
+  font-size:10px; font-weight:700; padding:1px 7px; border-radius:20px; }
+.sidebar-bottom { margin-top:auto; padding:0 10px; }
+.user-pill { background:var(--surface2); border-radius:12px; padding:10px 12px;
+  display:flex; align-items:center; gap:10px; }
+.user-ava { width:34px; height:34px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.85rem; color:#fff; flex-shrink:0; }
+.user-name { font-size:13px; font-weight:600; line-height:1.2; }
+.user-role { font-size:11px; color:var(--muted); }
+.logout-icon { margin-left:auto; color:var(--muted); cursor:pointer; font-size:1rem; transition:color .15s; flex-shrink:0; }
+.logout-icon:hover { color:var(--red); }
+
+/* MAIN */
+.main { margin-left:240px; display:flex; flex-direction:column; min-height:100vh; }
+
+/* TOPBAR */
+.topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:14px 28px;
+  display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:50; }
+.topbar-title { font-size:1.05rem; font-weight:700; }
+.topbar-sub { font-size:13px; color:var(--muted); margin-left:2px; }
+.topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
+.search-wrap { position:relative; }
+.search-wrap input { background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  padding:8px 14px 8px 36px; color:var(--text); font-size:13px; font-family:inherit; outline:none;
+  width:220px; transition:border .15s,width .2s; }
+.search-wrap input:focus { border-color:var(--accent); width:280px; }
+.search-wrap input::placeholder { color:var(--muted); }
+.search-wrap i { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.95rem; }
+.icon-btn { width:34px; height:34px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:9px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); font-size:1rem; transition:all .15s; flex-shrink:0; }
+.icon-btn:hover { color:var(--text); border-color:var(--accent); }
+.lang-grp { display:flex; gap:3px; }
+.lb { background:transparent; border:1px solid var(--border); color:var(--muted);
+  font-size:11px; font-weight:600; padding:4px 9px; border-radius:7px; cursor:pointer; font-family:inherit; transition:all .15s; }
+.lb.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* CONTENT */
+.content { padding:24px 28px; flex:1; }
+.page-head { margin-bottom:22px; }
+.page-title { font-size:1.35rem; font-weight:800; }
+.page-sub   { font-size:13px; color:var(--muted); margin-top:3px; }
+
+/* CARDS */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; }
+.card-p { padding:20px; }
+.card-title { font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.card-title i { color:var(--accent); }
+
+/* STATS GRID */
+.stats-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; }
+.stat-box { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; }
+.stat-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; margin-bottom:10px; }
+.stat-num  { font-size:1.55rem; font-weight:800; line-height:1; }
+.stat-lbl  { font-size:12px; color:var(--muted); margin-top:3px; }
+
+/* BUTTONS */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  padding:8px 16px; border-radius:9px; font-size:13px; font-weight:600; font-family:inherit;
+  cursor:pointer; border:none; transition:all .15s; text-decoration:none; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-primary:hover { background:var(--accent-hover); transform:translateY(-1px); }
+.btn-outline { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+.btn-outline:hover { background:rgba(108,99,255,.1); }
+.btn-ghost   { background:transparent; color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:hover { color:var(--text); border-color:var(--text); }
+.btn-danger  { background:rgba(248,113,113,.1); color:var(--red); border:1px solid rgba(248,113,113,.2); }
+.btn-danger:hover { background:rgba(248,113,113,.2); }
+.btn-sm { padding:5px 12px; font-size:12px; border-radius:7px; }
+.btn-lg { padding:11px 24px; font-size:15px; border-radius:11px; }
+.btn-full { width:100%; }
+.btn:disabled { opacity:.5; cursor:not-allowed; transform:none !important; }
+
+/* INPUTS */
+.field { margin-bottom:16px; }
+.field label { font-size:12px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px; }
+.input { width:100%; background:var(--input-bg); border:1.5px solid var(--border); border-radius:10px;
+  padding:10px 14px; color:var(--text); font-size:14px; font-family:inherit; outline:none; transition:border .15s; }
+.input:focus { border-color:var(--accent); }
+.input::placeholder { color:var(--muted); }
+select.input { cursor:pointer; }
+textarea.input { resize:vertical; min-height:80px; }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+  padding:2px 9px; border-radius:20px; }
+.badge-accent  { background:rgba(108,99,255,.15); color:var(--accent); }
+.badge-green   { background:rgba(34,211,165,.15); color:var(--green); }
+.badge-yellow  { background:rgba(251,191,36,.15); color:var(--yellow); }
+.badge-red     { background:rgba(248,113,113,.15); color:var(--red); }
+.badge-blue    { background:rgba(96,165,250,.15); color:var(--blue); }
+.badge-pink    { background:rgba(255,107,157,.15); color:var(--accent2); }
+
+/* TABLE */
+.table-wrap { overflow-x:auto; border-radius:14px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; }
+thead tr { background:var(--surface2); }
+th { padding:11px 16px; font-size:12px; font-weight:700; color:var(--muted); text-align:left; white-space:nowrap; }
+td { padding:12px 16px; font-size:13px; border-top:1px solid var(--border); }
+tr:hover td { background:var(--surface2); }
+
+/* ALERTS */
+.alert { padding:10px 14px; border-radius:9px; font-size:13px; margin-bottom:14px; display:none; }
+.alert-err { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); color:var(--red); }
+.alert-ok  { background:rgba(34,211,165,.1);  border:1px solid rgba(34,211,165,.25);  color:var(--green); }
+
+/* PROGRESS */
+.progress { height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent),var(--green)); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--surface2); border-radius:3px; }
+
+/* SPINNER */
+.spin { width:16px; height:16px; border:2px solid rgba(255,255,255,.2); border-top-color:#fff;
+  border-radius:50%; animation:_spin .7s linear infinite; display:inline-block; }
+@keyframes _spin { to { transform:rotate(360deg) } }
+
+.catalog-layout { display:grid; grid-template-columns:220px 1fr; gap:16px; align-items:start; }
+.filter-panel { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:16px; position:sticky; top:76px; }
+.fp-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:14px; font-weight:700; }
+.fp-reset { font-size:11px; color:var(--accent); cursor:pointer; background:none; border:none; font-family:inherit; }
+.fp-section { margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+.fp-section:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.fp-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.fp-check { display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;
+  padding:4px 0; color:var(--muted); transition:color .15s; }
+.fp-check:hover { color:var(--text); }
+.fp-check input { accent-color:var(--accent); width:14px; height:14px; cursor:pointer; }
+.courses-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.results-txt { font-size:13px; color:var(--muted); }
+.sort-sel { background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  font-size:13px; padding:7px 12px; border-radius:9px; font-family:inherit; outline:none;
+  cursor:pointer; margin-left:auto; }
+.active-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.active-tag { background:rgba(108,99,255,.12); color:var(--accent); border:1px solid rgba(108,99,255,.25);
+  font-size:11px; padding:3px 10px; border-radius:20px; }
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+.cc { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; transition:transform .2s,border-color .2s; cursor:pointer; }
+.cc:hover { transform:translateY(-3px); border-color:rgba(108,99,255,.4); }
+.cc-thumb { height:120px; display:flex; align-items:center; justify-content:center;
+  font-size:2.8rem; position:relative; }
+.cc-thumb-badge { position:absolute; top:8px; right:8px; font-size:10px; font-weight:700;
+  padding:2px 8px; border-radius:20px; color:#fff; }
+.cc-body { padding:14px; }
+.cc-cat { font-size:11px; color:var(--muted); margin-bottom:5px; }
+.cc-title { font-size:13.5px; font-weight:700; margin-bottom:5px; line-height:1.4; }
+.cc-desc { font-size:12px; color:var(--muted); margin-bottom:10px; line-height:1.5; }
+.cc-meta { display:flex; align-items:center; gap:10px; font-size:11px; color:var(--muted); margin-bottom:10px; }
+.cc-prog { height:4px; border-radius:2px; background:var(--surface2); overflow:hidden; margin-bottom:10px; }
+.cc-prog-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--green)); }
+.empty-st { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; }
+.empty-st i { font-size:3rem; display:block; margin-bottom:12px; opacity:.25; }
+.stats-4 { margin-bottom:18px; }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <a class="sidebar-logo" href="/index.html"><div class="logo-box">🎓</div><span class="logo-label">AdaptiveLearn</span></a>
+  <div class="nav-group">
+    <span class="nav-group-label">Главное</span>
+    <a class="nav-link active" href="/courses.html"><i class="bi bi-collection"></i>Курсы</a>
+    <a class="nav-link " href="/dashboard.html"><i class="bi bi-speedometer2"></i>Дашборд</a>
+  </div>
+  <div class="nav-group" style="margin-top:12px">
+    <span class="nav-group-label">Обучение</span>
+    <a class="nav-link" href="/courses.html"><i class="bi bi-book"></i>В процессе <span class="nav-badge" id="sb-inprogress">0</span></a>
+    <a class="nav-link" href="/courses.html"><i class="bi bi-check2-circle"></i>Завершённые</a>
+  </div>
+  <div class="nav-group" id="admin-nav" style="margin-top:12px;display:none">
+    <span class="nav-group-label">Администратор</span>
+    <a class="nav-link " href="/admin.html"><i class="bi bi-shield-check"></i>Панель</a>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-pill">
+      <div class="user-ava" id="sb-av">?</div>
+      <div><div class="user-name" id="sb-name">...</div><div class="user-role" id="sb-role">Студент</div></div>
+      <i class="bi bi-box-arrow-right logout-icon" onclick="_logout()" title="Выйти"></i>
+    </div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div><div class="topbar-title">Каталог курсов</div></div>
+    <div class="search-wrap"><i class="bi bi-search"></i>
+      <input type="text" id="f-search" placeholder="Поиск..." oninput="applyFilters()"></div>
+    <div class="topbar-right">
+      <div class="lang-grp">
+        <button class="lb" data-lang="ru" onclick="_setLang('ru')">RU</button>
+        <button class="lb" data-lang="en" onclick="_setLang('en')">EN</button>
+        <button class="lb" data-lang="kz" onclick="_setLang('kz')">KZ</button>
+      </div>
+      <div class="icon-btn" onclick="_toggleTheme()" title="Тема"><i class="bi bi-sun" id="theme-icon"></i></div>
+    </div>
+  </div>
+  <div class="content">
+
+<div class="stats-4">
+  <div class="stat-box"><div class="stat-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="bi bi-collection"></i></div><div class="stat-num" id="st-total">0</div><div class="stat-lbl">Всего курсов</div></div>
+  <div class="stat-box"><div class="stat-icon" style="background:rgba(34,211,165,.15);color:var(--green)"><i class="bi bi-check2-circle"></i></div><div class="stat-num" id="st-enr">0</div><div class="stat-lbl">Записан</div></div>
+  <div class="stat-box"><div class="stat-icon" style="background:rgba(251,191,36,.15);color:var(--yellow)"><i class="bi bi-lightning-charge"></i></div><div class="stat-num" id="st-inp">0</div><div class="stat-lbl">В процессе</div></div>
+  <div class="stat-box"><div class="stat-icon" style="background:rgba(255,107,157,.15);color:var(--accent2)"><i class="bi bi-star"></i></div><div class="stat-num" id="st-comp">0</div><div class="stat-lbl">Завершено</div></div>
+</div>
+<div class="catalog-layout">
+  <div class="filter-panel">
+    <div class="fp-header">Фильтры <button class="fp-reset" onclick="resetFilters()">Сбросить</button></div>
+    <div class="fp-section">
+      <div class="fp-label">Категория</div>
+      <div id="fp-cats"></div>
+    </div>
+    <div class="fp-section">
+      <div class="fp-label">Уровень</div>
+      <label class="fp-check"><input type="checkbox" value="Beginner" onchange="applyFilters()"> Начальный</label>
+      <label class="fp-check"><input type="checkbox" value="Intermediate" onchange="applyFilters()"> Средний</label>
+      <label class="fp-check"><input type="checkbox" value="Advanced" onchange="applyFilters()"> Продвинутый</label>
+    </div>
+    <div class="fp-section">
+      <div class="fp-label">Тип контента</div>
+      <label class="fp-check"><input type="checkbox" id="tp-video" onchange="applyFilters()"><i class="bi bi-play-circle" style="color:var(--red)"></i> Видео</label>
+      <label class="fp-check"><input type="checkbox" id="tp-text"  onchange="applyFilters()"><i class="bi bi-file-text"  style="color:var(--blue)"></i> Текст</label>
+      <label class="fp-check"><input type="checkbox" id="tp-quiz"  onchange="applyFilters()"><i class="bi bi-patch-question" style="color:var(--yellow)"></i> Тест</label>
+      <label class="fp-check"><input type="checkbox" id="tp-audio" onchange="applyFilters()"><i class="bi bi-headphones" style="color:var(--green)"></i> Аудио</label>
+    </div>
+    <div class="fp-section">
+      <div class="fp-label">Статус</div>
+      <label class="fp-check"><input type="checkbox" id="fp-enrolled"   onchange="applyFilters()"> Записан</label>
+      <label class="fp-check"><input type="checkbox" id="fp-new"        onchange="applyFilters()"> Новые</label>
+      <label class="fp-check"><input type="checkbox" id="fp-inprogress" onchange="applyFilters()"> В процессе</label>
+    </div>
+  </div>
+  <div>
+    <div class="courses-toolbar">
+      <span class="results-txt" id="res-count">0 курсов</span>
+      <select class="sort-sel" id="f-sort" onchange="applyFilters()">
+        <option value="">По умолчанию</option>
+        <option value="modules_desc">Больше модулей</option>
+        <option value="modules_asc">Меньше модулей</option>
+        <option value="title_asc">А → Я</option>
+      </select>
+      <div class="icon-btn" id="vbtn-grid" onclick="setView('grid',this)" title="Сетка" style="color:var(--accent)"><i class="bi bi-grid-3x3-gap"></i></div>
+      <div class="icon-btn" id="vbtn-list" onclick="setView('list',this)" title="Список"><i class="bi bi-list-ul"></i></div>
+    </div>
+    <div id="active-tags" class="active-tags"></div>
+    <div id="courses-grid" class="courses-grid"></div>
+  </div>
+</div>
+
+  </div>
+</div>
+<script src="/js/auth.js"></script>
+<script>
+const _html=document.documentElement;
+function _applyTheme(t){_html.setAttribute("data-theme",t);localStorage.setItem("theme",t);const ic=document.getElementById("theme-icon");if(ic)ic.className=t==="dark"?"bi bi-sun":"bi bi-moon";}
+function _toggleTheme(){_applyTheme(_html.getAttribute("data-theme")==="dark"?"light":"dark");}
+_applyTheme(localStorage.getItem("theme")||"dark");
+function _setLang(l){localStorage.setItem("lang",l);document.querySelectorAll(".lb").forEach(b=>b.classList.toggle("active",b.dataset.lang===l));}
+(function(){const l=localStorage.getItem("lang")||"ru";document.querySelectorAll(".lb").forEach(b=>b.classList.toggle("active",b.dataset.lang===l));})();
+function _logout(){localStorage.clear();window.location.href="/login.html";}
+function _initSidebar(){
+  const nm=localStorage.getItem("name")||"?";
+  const rl=localStorage.getItem("role")||"Student";
+  const av=document.getElementById("sb-av");if(av)av.textContent=nm.charAt(0).toUpperCase();
+  const sn=document.getElementById("sb-name");if(sn)sn.textContent=nm;
+  const sr=document.getElementById("sb-role");if(sr)sr.textContent=rl==="Admin"?"Администратор":"Студент";
+  const an=document.getElementById("admin-nav");if(an)an.style.display=rl==="Admin"?"block":"none";
+}
+requireAuth();updateNavbar();_initSidebar();
+
+const GRADS=['linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#f093fb,#f5576c)',
+  'linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)',
+  'linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#a18cd1,#fbc2eb)','linear-gradient(135deg,#fccb90,#d57eeb)'];
+const ICONS={Математика:'🔢',Программирование:'💻',Языки:'🌐',Наука:'🔬',Бизнес:'📊',История:'📜',Дизайн:'🎨'};
+const LVLC={Beginner:'var(--green)',Intermediate:'var(--yellow)',Advanced:'var(--red)'};
+const LVLN={Beginner:'Начальный',Intermediate:'Средний',Advanced:'Продвинутый'};
+let allCourses=[],viewMode='grid';
+
+async function loadCourses(){
+  const res=await authFetch('/courses');
+  allCourses=await res.json();
+  const enr=allCourses.filter(c=>c.isEnrolled).length;
+  const inp=allCourses.filter(c=>c.isEnrolled&&c.progress>0&&c.progress<100).length;
+  const comp=allCourses.filter(c=>c.progress>=100).length;
+  document.getElementById('st-total').textContent=allCourses.length;
+  document.getElementById('st-enr').textContent=enr;
+  document.getElementById('st-inp').textContent=inp;
+  document.getElementById('st-comp').textContent=comp;
+  document.getElementById('sb-inprogress').textContent=inp;
+  const cats=[...new Set(allCourses.map(c=>c.category).filter(Boolean))];
+  document.getElementById('fp-cats').innerHTML=cats.map(cat=>`
+    <label class="fp-check"><input type="checkbox" value="${cat}" onchange="applyFilters()">${ICONS[cat]||'📚'} ${cat}</label>`).join('');
+  applyFilters();
+}
+
+function applyFilters(){
+  let list=[...allCourses];const tags=[];
+  const q=document.getElementById('f-search')?.value.toLowerCase().trim()||'';
+  if(q){list=list.filter(c=>c.title.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q));tags.push('🔍 '+q);}
+  const selCats=[...document.querySelectorAll('#fp-cats input:checked')].map(el=>el.value);
+  if(selCats.length){list=list.filter(c=>selCats.includes(c.category));tags.push(...selCats);}
+  const selLvls=[...document.querySelectorAll('.filter-panel input[value=Beginner],.filter-panel input[value=Intermediate],.filter-panel input[value=Advanced]')].filter(el=>el.checked).map(el=>el.value);
+  if(selLvls.length){list=list.filter(c=>selLvls.includes(c.level));tags.push(...selLvls.map(l=>LVLN[l]));}
+  if(document.getElementById('fp-enrolled')?.checked){list=list.filter(c=>c.isEnrolled);tags.push('Записан');}
+  if(document.getElementById('fp-new')?.checked){list=list.filter(c=>!c.isEnrolled);tags.push('Новые');}
+  if(document.getElementById('fp-inprogress')?.checked){list=list.filter(c=>c.isEnrolled&&c.progress>0&&c.progress<100);tags.push('В процессе');}
+  const sort=document.getElementById('f-sort').value;
+  if(sort==='modules_desc')list.sort((a,b)=>b.moduleCount-a.moduleCount);
+  if(sort==='modules_asc') list.sort((a,b)=>a.moduleCount-b.moduleCount);
+  if(sort==='title_asc')   list.sort((a,b)=>a.title.localeCompare(b.title));
+  document.getElementById('res-count').textContent=list.length+' курсов';
+  document.getElementById('active-tags').innerHTML=tags.map(t=>`<span class="active-tag">${t}</span>`).join('');
+  renderCourses(list);
+}
+
+function renderCourses(list){
+  const g=document.getElementById('courses-grid');
+  if(!list.length){g.className='courses-grid';g.innerHTML=`<div class="empty-st"><i class="bi bi-inbox"></i>Курсов не найдено</div>`;return;}
+  if(viewMode==='grid'){
+    g.className='courses-grid';
+    g.innerHTML=list.map(c=>`
+      <div class="cc" onclick="openCourse(${c.id},${c.isEnrolled})">
+        <div class="cc-thumb" style="background:${GRADS[c.id%GRADS.length]}">
+          ${ICONS[c.category]||'📚'}
+          <span class="cc-thumb-badge" style="background:${LVLC[c.level]||'#888'}">${LVLN[c.level]||c.level}</span>
+        </div>
+        <div class="cc-body">
+          <div class="cc-cat">${c.category||'Курс'}</div>
+          <div class="cc-title">${c.title}</div>
+          <div class="cc-desc">${(c.description||'').substring(0,65)}${(c.description||'').length>65?'...':''}</div>
+          <div class="cc-meta"><span><i class="bi bi-collection me-1"></i>${c.moduleCount} модулей</span>${c.isEnrolled?`<span style="color:var(--green)"><i class="bi bi-check-circle me-1"></i>Записан</span>`:''}</div>
+          ${c.isEnrolled&&c.progress>0?`<div style="font-size:11px;color:var(--muted);margin-bottom:5px">${c.progress}%</div><div class="cc-prog"><div class="cc-prog-fill" style="width:${c.progress}%"></div></div>`:''}
+          <button class="btn ${c.isEnrolled?'btn-primary':'btn-outline'} btn-full btn-sm">
+            <i class="bi bi-${c.isEnrolled?'play-fill':'plus-circle'} me-1"></i>${c.isEnrolled?'Продолжить':'Записаться'}
+          </button>
+        </div>
+      </div>`).join('');
+  } else {
+    g.className='';
+    g.innerHTML=list.map(c=>`
+      <div class="cc" style="display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:8px;border-radius:14px"
+           onclick="openCourse(${c.id},${c.isEnrolled})">
+        <div style="width:50px;height:50px;border-radius:12px;background:${GRADS[c.id%GRADS.length]};display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">${ICONS[c.category]||'📚'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700">${c.title}</div>
+          <div style="font-size:11px;color:var(--muted)">${c.category} · ${c.moduleCount} мод. · ${LVLN[c.level]||c.level}</div>
+          ${c.isEnrolled&&c.progress>0?`<div class="cc-prog" style="margin-top:6px;max-width:180px"><div class="cc-prog-fill" style="width:${c.progress}%"></div></div>`:''}
+        </div>
+        <button class="btn ${c.isEnrolled?'btn-primary':'btn-outline'} btn-sm" style="flex-shrink:0">
+          ${c.isEnrolled?'Продолжить':'Записаться'}
+        </button>
+      </div>`).join('');
+  }
+}
+
+function setView(mode,el){
+  viewMode=mode;
+  document.getElementById('vbtn-grid').style.color=mode==='grid'?'var(--accent)':'var(--muted)';
+  document.getElementById('vbtn-list').style.color=mode==='list'?'var(--accent)':'var(--muted)';
+  applyFilters();
+}
+
+function resetFilters(){
+  const si=document.getElementById('f-search');if(si)si.value='';
+  document.querySelectorAll('.filter-panel input[type=checkbox]').forEach(el=>el.checked=false);
+  document.getElementById('f-sort').value='';
+  applyFilters();
+}
+
+async function openCourse(id, enrolled, event) {
+  if (event) event.stopPropagation();
+  if (!enrolled) {
+    try {
+      const res = await authFetch('/courses/enroll/' + id, { method: 'POST' });
+      if (!res || !res.ok) {
+        const errText = await res.text();
+        console.error('Enroll error:', res.status, errText);
+        // Если уже записан — всё равно открываем курс
+        if (res.status !== 400 && res.status !== 409) {
+          alert('Ошибка записи: ' + res.status);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Enroll fetch error:', e);
+    }
+  }
+  window.location.href = '/course.html?id=' + id;
+}
+
+loadCourses();
+
+</script>
+</body>
+</html>

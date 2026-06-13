@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Дашборд — AdaptiveLearn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+                *, *::before, *::after {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                [data-theme="dark"] {
+                    --bg: #0f1117;
+                    --surface: #1a1d27;
+                    --surface2: #22263a;
+                    --surface3: #2a2f45;
+                    --border: rgba(255,255,255,.08);
+                    --border2: rgba(255,255,255,.12);
+                    --text: #e8eaf0;
+                    --muted: #7b7f96;
+                    --muted2: #9ca3b8;
+                    --accent: #6c63ff;
+                    --accent-hover: #7c75ff;
+                    --accent2: #ff6b9d;
+                    --green: #22d3a5;
+                    --yellow: #fbbf24;
+                    --red: #f87171;
+                    --blue: #60a5fa;
+                    --card-bg: #1a1d27;
+                    --input-bg: #22263a;
+                }
+
+                [data-theme="light"] {
+                    --bg: #f4f6ff;
+                    --surface: #ffffff;
+                    --surface2: #eef0fa;
+                    --surface3: #e5e9f8;
+                    --border: rgba(0,0,0,.08);
+                    --border2: rgba(0,0,0,.12);
+                    --text: #1a1d27;
+                    --muted: #6b7280;
+                    --muted2: #9ca3af;
+                    --accent: #6c63ff;
+                    --accent-hover: #7c75ff;
+                    --accent2: #ff6b9d;
+                    --green: #059669;
+                    --yellow: #d97706;
+                    --red: #dc2626;
+                    --blue: #2563eb;
+                    --card-bg: #ffffff;
+                    --input-bg: #f4f6ff;
+                }
+
+                body {
+                    font-family: 'Plus Jakarta Sans',sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    transition: background .3s,color .3s;
+                }
+
+                /* SIDEBAR */
+                .sidebar {
+                    width: 240px;
+                    min-height: 100vh;
+                    background: var(--surface);
+                    border-right: 1px solid var(--border);
+                    display: flex;
+                    flex-direction: column;
+                    position: fixed;
+                    left: 0;
+                    top: 0;
+                    z-index: 100;
+                    padding: 20px 0;
+                }
+
+                .sidebar-logo {
+                    padding: 0 16px 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    text-decoration: none;
+                }
+
+                .logo-box {
+                    width: 34px;
+                    height: 34px;
+                    background: var(--accent);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                    flex-shrink: 0;
+                }
+
+                .logo-label {
+                    font-weight: 800;
+                    font-size: .95rem;
+                    color: var(--text);
+                }
+
+                .nav-group {
+                    padding: 0 10px;
+                    margin-bottom: 6px;
+                }
+
+                .nav-group-label {
+                    font-size: 10px;
+                    font-weight: 700;
+                    color: var(--muted);
+                    text-transform: uppercase;
+                    letter-spacing: .08em;
+                    padding: 0 8px;
+                    margin-bottom: 4px;
+                    display: block;
+                }
+
+                .nav-link {
+                    display: flex;
+                    align-items: center;
+                    gap: 9px;
+                    padding: 8px 10px;
+                    border-radius: 10px;
+                    font-size: 13.5px;
+                    font-weight: 500;
+                    color: var(--muted);
+                    cursor: pointer;
+                    transition: all .15s;
+                    text-decoration: none;
+                    margin-bottom: 2px;
+                    white-space: nowrap;
+                }
+
+                    .nav-link:hover {
+                        background: var(--surface2);
+                        color: var(--text);
+                    }
+
+                    .nav-link.active {
+                        background: var(--accent);
+                        color: #fff;
+                    }
+
+                    .nav-link i {
+                        font-size: 1rem;
+                        flex-shrink: 0;
+                    }
+
+                .nav-badge {
+                    margin-left: auto;
+                    background: var(--accent2);
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: 700;
+                    padding: 1px 7px;
+                    border-radius: 20px;
+                }
+
+                .sidebar-bottom {
+                    margin-top: auto;
+                    padding: 0 10px;
+                }
+
+                .user-pill {
+                    background: var(--surface2);
+                    border-radius: 12px;
+                    padding: 10px 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .user-ava {
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg,var(--accent),var(--accent2));
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 800;
+                    font-size: .85rem;
+                    color: #fff;
+                    flex-shrink: 0;
+                }
+
+                .user-name {
+                    font-size: 13px;
+                    font-weight: 600;
+                    line-height: 1.2;
+                }
+
+                .user-role {
+                    font-size: 11px;
+                    color: var(--muted);
+                }
+
+                .logout-icon {
+                    margin-left: auto;
+                    color: var(--muted);
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: color .15s;
+                    flex-shrink: 0;
+                }
+
+                    .logout-icon:hover {
+                        color: var(--red);
+                    }
+
+                .main {
+                    margin-left: 240px;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                }
+
+                .topbar {
+                    background: var(--surface);
+                    border-bottom: 1px solid var(--border);
+                    padding: 14px 28px;
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 50;
+                }
+
+                .topbar-title {
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                }
+
+                .topbar-right {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-left: auto;
+                }
+
+                .icon-btn {
+                    width: 34px;
+                    height: 34px;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    color: var(--muted);
+                    font-size: 1rem;
+                    transition: all .15s;
+                    flex-shrink: 0;
+                }
+
+                    .icon-btn:hover {
+                        color: var(--text);
+                        border-color: var(--accent);
+                    }
+
+                .lang-grp {
+                    display: flex;
+                    gap: 3px;
+                }
+
+                .lb {
+                    background: transparent;
+                    border: 1px solid var(--border);
+                    color: var(--muted);
+                    font-size: 11px;
+                    font-weight: 600;
+                    padding: 4px 9px;
+                    border-radius: 7px;
+                    cursor: pointer;
+                    font-family: inherit;
+                    transition: all .15s;
+                }
+
+                    .lb.active {
+                        background: var(--accent);
+                        color: #fff;
+                        border-color: var(--accent);
+                    }
+
+                .content {
+                    padding: 24px 28px;
+                    flex: 1;
+                }
+
+                .card {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: 14px;
+                }
+
+                .card-p {
+                    padding: 20px;
+                }
+
+                .card-title {
+                    font-size: 14px;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 16px;
+                }
+
+                    .card-title i {
+                        color: var(--accent);
+                    }
+
+                /* PROGRESS */
+                .progress {
+                    height: 6px;
+                    background: var(--surface2);
+                    border-radius: 3px;
+                    overflow: hidden;
+                }
+
+                .progress-fill {
+                    height: 100%;
+                    border-radius: 3px;
+                    background: linear-gradient(90deg,var(--accent),var(--green));
+                }
+
+                /* SCROLLBAR */
+                ::-webkit-scrollbar {
+                    width: 5px;
+                    height: 5px;
+                }
+
+                ::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                ::-webkit-scrollbar-thumb {
+                    background: var(--surface2);
+                    border-radius: 3px;
+                }
+
+                /* SPINNER */
+                .spin {
+                    width: 14px;
+                    height: 14px;
+                    border: 2px solid rgba(255,255,255,.2);
+                    border-top-color: var(--accent);
+                    border-radius: 50%;
+                    animation: _spin .7s linear infinite;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+
+                @keyframes _spin {
+                    to {
+                        transform: rotate(360deg)
+                    }
+                }
+
+                /* ═══════════════════════════════
+           PROFILE HERO — no risk colors
+        ═══════════════════════════════ */
+                .profile-hero {
+                    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+                    border-radius: 18px;
+                    padding: 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    margin-bottom: 20px;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                    .profile-hero::before {
+                        content: '';
+                        position: absolute;
+                        right: -40px;
+                        top: -40px;
+                        width: 180px;
+                        height: 180px;
+                        background: rgba(255,255,255,.07);
+                        border-radius: 50%;
+                    }
+
+                .ph-avatar {
+                    width: 68px;
+                    height: 68px;
+                    background: rgba(255,255,255,.2);
+                    border-radius: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    font-weight: 800;
+                    color: #fff;
+                    flex-shrink: 0;
+                }
+
+                .ph-name {
+                    font-size: 1.3rem;
+                    font-weight: 800;
+                    color: #fff;
+                }
+
+                .ph-sub {
+                    color: rgba(255,255,255,.7);
+                    font-size: 13px;
+                }
+
+                .ph-badges {
+                    display: flex;
+                    gap: 6px;
+                    margin-top: 8px;
+                    flex-wrap: wrap;
+                }
+
+                .ph-badge {
+                    background: rgba(255,255,255,.18);
+                    color: #fff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    padding: 2px 10px;
+                    border-radius: 20px;
+                }
+
+                /* Style chip in hero — replaces "Риск провала" */
+                .ph-style-chip {
+                    margin-left: auto;
+                    background: rgba(255,255,255,.15);
+                    border: 1px solid rgba(255,255,255,.25);
+                    border-radius: 14px;
+                    padding: 12px 20px;
+                    text-align: center;
+                    flex-shrink: 0;
+                }
+
+                .ph-style-chip-lbl {
+                    font-size: 11px;
+                    color: rgba(255,255,255,.7);
+                    margin-bottom: 4px;
+                }
+
+                .ph-style-chip-val {
+                    font-size: 1.1rem;
+                    font-weight: 800;
+                    color: #fff;
+                }
+
+                /* STATS */
+                .stats-4 {
+                    display: grid;
+                    grid-template-columns: repeat(4,1fr);
+                    gap: 14px;
+                    margin-bottom: 22px;
+                }
+
+                .stat-box {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: 14px;
+                    padding: 18px;
+                }
+
+                .stat-icon {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                    margin-bottom: 10px;
+                }
+
+                .stat-num {
+                    font-size: 1.55rem;
+                    font-weight: 800;
+                    line-height: 1;
+                }
+
+                .stat-lbl {
+                    font-size: 12px;
+                    color: var(--muted);
+                    margin-top: 3px;
+                }
+
+                /* DASH GRID */
+                .dash-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 320px;
+                    gap: 16px;
+                }
+
+                .course-row {
+                    padding: 12px 0;
+                    border-bottom: 1px solid var(--border);
+                }
+
+                    .course-row:last-child {
+                        border-bottom: none;
+                    }
+
+                .course-row-top {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 6px;
+                    font-size: 13px;
+                }
+
+                .course-row-name {
+                    font-weight: 600;
+                }
+
+                /* STYLE CARD */
+                .style-hero {
+                    text-align: center;
+                    padding: 10px 0 14px;
+                }
+
+                .style-emoji {
+                    font-size: 2.8rem;
+                    display: block;
+                    margin-bottom: 8px;
+                }
+
+                .style-name-text {
+                    font-size: 1.05rem;
+                    font-weight: 800;
+                }
+
+                .style-desc-text {
+                    font-size: 12px;
+                    color: var(--muted);
+                    margin-top: 3px;
+                }
+
+                /* ══════════════════════════════════════
+           AI INSIGHT CARD (replaces Прогноз AI)
+        ══════════════════════════════════════ */
+                .ai-insight-card {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: 14px;
+                    padding: 20px;
+                    margin-bottom: 14px;
+                }
+
+                .ai-insight-title {
+                    font-size: 14px;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 14px;
+                }
+
+                    .ai-insight-title i {
+                        color: var(--accent);
+                    }
+
+                .insight-row {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 12px;
+                    padding: 10px 12px;
+                    border-radius: 10px;
+                    background: var(--surface2);
+                    margin-bottom: 8px;
+                    font-size: 13px;
+                    line-height: 1.5;
+                }
+
+                    .insight-row:last-child {
+                        margin-bottom: 0;
+                    }
+
+                .insight-icon {
+                    font-size: 1.1rem;
+                    flex-shrink: 0;
+                    margin-top: 1px;
+                }
+
+                .insight-text {
+                    color: var(--text);
+                }
+
+                .insight-sub {
+                    font-size: 11px;
+                    color: var(--muted);
+                    margin-top: 2px;
+                }
+
+                /* ═══════════════════════════════════════════
+           RECOMMENDATIONS — style-based course cards
+        ═══════════════════════════════════════════ */
+                .rec-section {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: 14px;
+                    padding: 20px;
+                    margin-bottom: 14px;
+                }
+
+                .rec-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 16px;
+                }
+
+                .rec-title {
+                    font-size: 14px;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                    .rec-title i {
+                        color: var(--yellow);
+                    }
+
+                .rec-all-link {
+                    font-size: 12px;
+                    color: var(--accent);
+                    text-decoration: none;
+                    font-weight: 600;
+                }
+
+                    .rec-all-link:hover {
+                        text-decoration: underline;
+                    }
+
+                .rec-grid {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .rec-card {
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    border-radius: 12px;
+                    padding: 14px;
+                    text-decoration: none;
+                    color: var(--text);
+                    transition: all .18s;
+                    cursor: pointer;
+                }
+
+                    .rec-card:hover {
+                        border-color: rgba(108,99,255,.5);
+                        transform: translateX(4px);
+                        background: rgba(108,99,255,.05);
+                    }
+
+                .rec-card-icon {
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 12px;
+                    background: rgba(108,99,255,.15);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.4rem;
+                    flex-shrink: 0;
+                }
+
+                .rec-card-body {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .rec-card-title {
+                    font-size: 13px;
+                    font-weight: 700;
+                    margin-bottom: 3px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .rec-card-reason {
+                    font-size: 11px;
+                    color: var(--muted);
+                    line-height: 1.4;
+                }
+
+                .rec-card-footer {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-top: 6px;
+                }
+
+                .rec-tag {
+                    font-size: 10px;
+                    font-weight: 700;
+                    padding: 2px 7px;
+                    border-radius: 20px;
+                    background: rgba(108,99,255,.15);
+                    color: var(--accent);
+                }
+
+                .rec-match {
+                    font-size: 10px;
+                    font-weight: 700;
+                    color: var(--green);
+                }
+
+                .rec-arrow {
+                    color: var(--muted);
+                    font-size: .9rem;
+                    flex-shrink: 0;
+                    transition: all .18s;
+                }
+
+                .rec-card:hover .rec-arrow {
+                    color: var(--accent);
+                    transform: translateX(3px);
+                }
+
+                /* Match bar */
+                .match-bar {
+                    height: 3px;
+                    background: var(--surface3);
+                    border-radius: 2px;
+                    margin-top: 5px;
+                    overflow: hidden;
+                }
+
+                .match-fill {
+                    height: 100%;
+                    border-radius: 2px;
+                    background: linear-gradient(90deg, var(--accent), var(--green));
+                }
+
+                .rec-empty {
+                    text-align: center;
+                    padding: 20px;
+                    color: var(--muted);
+                    font-size: 13px;
+                }
+
+                .rec-loading {
+                    text-align: center;
+                    padding: 20px;
+                    color: var(--muted);
+                    font-size: 13px;
+                }
+
+                /* TIP ITEMS */
+                .tip-item {
+                    background: var(--surface2);
+                    border-radius: 10px;
+                    padding: 10px 12px;
+                    font-size: 13px;
+                    margin-bottom: 8px;
+                    line-height: 1.5;
+                    display: flex;
+                    gap: 8px;
+                }
+
+                    .tip-item:last-child {
+                        margin-bottom: 0;
+                    }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a class="sidebar-logo" href="/index.html"><div class="logo-box">🎓</div><span class="logo-label">AdaptiveLearn</span></a>
+        <div class="nav-group">
+            <span class="nav-group-label">Главное</span>
+            <a class="nav-link" href="/courses.html"><i class="bi bi-collection"></i>Курсы</a>
+            <a class="nav-link active" href="/dashboard.html"><i class="bi bi-speedometer2"></i>Дашборд</a>
+        </div>
+        <div class="nav-group" style="margin-top:12px">
+            <span class="nav-group-label">Обучение</span>
+            <a class="nav-link" href="/courses.html"><i class="bi bi-book"></i>В процессе <span class="nav-badge" id="sb-inprogress">0</span></a>
+            <a class="nav-link" href="/courses.html"><i class="bi bi-check2-circle"></i>Завершённые</a>
+        </div>
+        <div class="nav-group" id="admin-nav" style="margin-top:12px;display:none">
+            <span class="nav-group-label">Администратор</span>
+            <a class="nav-link" href="/admin.html"><i class="bi bi-shield-check"></i>Панель</a>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="user-pill">
+                <div class="user-ava" id="sb-av">?</div>
+                <div><div class="user-name" id="sb-name">...</div><div class="user-role" id="sb-role">Студент</div></div>
+                <i class="bi bi-box-arrow-right logout-icon" onclick="_logout()" title="Выйти"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div><div class="topbar-title">Дашборд</div></div>
+            <div class="topbar-right">
+                <div class="lang-grp">
+                    <button class="lb" data-lang="ru" onclick="_setLang('ru')">RU</button>
+                    <button class="lb" data-lang="en" onclick="_setLang('en')">EN</button>
+                    <button class="lb" data-lang="kz" onclick="_setLang('kz')">KZ</button>
+                </div>
+                <div class="icon-btn" onclick="_toggleTheme()" title="Тема"><i class="bi bi-sun" id="theme-icon"></i></div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- PROFILE HERO — style chip instead of "Риск провала" -->
+            <div class="profile-hero">
+                <div class="ph-avatar" id="ph-av">?</div>
+                <div style="flex:1">
+                    <div class="ph-name" id="ph-name">...</div>
+                    <div class="ph-sub" id="ph-email"></div>
+                    <div class="ph-badges" id="ph-badges"></div>
+                </div>
+                <!-- Shows learning STYLE, not risk prediction -->
+                <div class="ph-style-chip">
+                    <div class="ph-style-chip-lbl">Стиль обучения</div>
+                    <div class="ph-style-chip-val" id="ph-style-chip">...</div>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-4">
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="bi bi-collection"></i></div>
+                    <div class="stat-num" id="s-courses">—</div><div class="stat-lbl">Курсов записано</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:rgba(34,211,165,.15);color:var(--green)"><i class="bi bi-check2-circle"></i></div>
+                    <div class="stat-num" id="s-comp">—</div><div class="stat-lbl">Завершено</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:rgba(251,191,36,.15);color:var(--yellow)"><i class="bi bi-bar-chart"></i></div>
+                    <div class="stat-num" id="s-score">—</div><div class="stat-lbl">Средний балл</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:rgba(255,107,157,.15);color:var(--accent2)"><i class="bi bi-patch-check"></i></div>
+                    <div class="stat-num" id="s-tests">—</div><div class="stat-lbl">Тестов сдано</div>
+                </div>
+            </div>
+
+            <!-- DASH GRID -->
+            <div class="dash-grid">
+
+                <!-- LEFT COLUMN -->
+                <div>
+                    <!-- My courses -->
+                    <div class="card card-p" style="margin-bottom:14px">
+                        <div class="card-title"><i class="bi bi-collection"></i>Мои курсы</div>
+                        <div id="courses-rows"><div style="color:var(--muted);font-size:13px"><span class="spin"></span> Загрузка...</div></div>
+                    </div>
+
+                    <!-- Score chart -->
+                    <div class="card card-p" style="margin-bottom:14px">
+                        <div class="card-title"><i class="bi bi-graph-up" style="color:var(--green)"></i>Динамика баллов</div>
+                        <canvas id="scores-chart" height="110"></canvas>
+                        <div id="no-scores" style="display:none;text-align:center;padding:24px;color:var(--muted);font-size:13px">
+                            Пройдите первые тесты — здесь появится ваша динамика
+                        </div>
+                    </div>
+
+                    <!-- AI recommendations — FULL WIDTH in left col on dashboard -->
+                    <div class="rec-section">
+                        <div class="rec-header">
+                            <div class="rec-title"><i class="bi bi-stars"></i>AI подобрал для тебя курсы</div>
+                            <a href="/courses.html" class="rec-all-link">Все курсы →</a>
+                        </div>
+                        <div id="rec-grid" class="rec-grid">
+                            <div class="rec-loading"><span class="spin"></span> Подбираем курсы под твой стиль...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div>
+                    <!-- Learning style -->
+                    <div class="card card-p" style="margin-bottom:14px">
+                        <div class="card-title"><i class="bi bi-person-bounding-box" style="color:#a78bfa"></i>Стиль восприятия</div>
+                        <div class="style-hero">
+                            <span class="style-emoji" id="st-emoji">?</span>
+                            <div class="style-name-text" id="st-name" style="color:#a78bfa">Определяется...</div>
+                            <div class="style-desc-text" id="st-desc"></div>
+                        </div>
+                        <canvas id="radar-chart" style="max-height:180px"></canvas>
+                    </div>
+
+                    <!-- AI INSIGHT — replaces "Прогноз AI" with Fail -->
+                    <div class="ai-insight-card">
+                        <div class="ai-insight-title"><i class="bi bi-cpu"></i>AI анализ прогресса</div>
+                        <div id="ai-insights">
+                            <div style="color:var(--muted);font-size:13px;text-align:center;padding:12px 0">
+                                <span class="spin"></span> Анализируем...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tips -->
+                    <div class="card card-p">
+                        <div class="card-title"><i class="bi bi-lightbulb" style="color:var(--yellow)"></i>Советы для тебя</div>
+                        <div id="tips-list"><div style="color:var(--muted);font-size:13px">Загрузка...</div></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        /* ── Theme / lang ── */
+        const _html = document.documentElement;
+        function _applyTheme(t) {
+            _html.setAttribute("data-theme", t);
+            localStorage.setItem("theme", t);
+            const ic = document.getElementById("theme-icon");
+            if (ic) ic.className = t === "dark" ? "bi bi-sun" : "bi bi-moon";
+        }
+        function _toggleTheme() { _applyTheme(_html.getAttribute("data-theme") === "dark" ? "light" : "dark"); }
+        _applyTheme(localStorage.getItem("theme") || "dark");
+        function _setLang(l) {
+            localStorage.setItem("lang", l);
+            document.querySelectorAll(".lb").forEach(b => b.classList.toggle("active", b.dataset.lang === l));
+        }
+        (function () {
+            const l = localStorage.getItem("lang") || "ru";
+            document.querySelectorAll(".lb").forEach(b => b.classList.toggle("active", b.dataset.lang === l));
+        })();
+        function _logout() { localStorage.clear(); window.location.href = "/login.html"; }
+        function _initSidebar() {
+            const nm = localStorage.getItem("name") || "?";
+            const rl = localStorage.getItem("role") || "Student";
+            const av = document.getElementById("sb-av"); if (av) av.textContent = nm.charAt(0).toUpperCase();
+            const sn = document.getElementById("sb-name"); if (sn) sn.textContent = nm;
+            const sr = document.getElementById("sb-role"); if (sr) sr.textContent = rl === "Admin" ? "Администратор" : "Студент";
+            const an = document.getElementById("admin-nav"); if (an) an.style.display = rl === "Admin" ? "block" : "none";
+        }
+        requireAuth(); updateNavbar(); _initSidebar();
+
+        /* ── Style config ── */
+        const STYLE_CFG = {
+            reading: { emoji: '📖', name: 'Читатель', desc: 'Тексты и статьи', color: '#a78bfa', chip: '📖 Читатель' },
+            visual: { emoji: '🎬', name: 'Визуал', desc: 'Видео и графика', color: '#60a5fa', chip: '🎬 Визуал' },
+            interactive: { emoji: '🎯', name: 'Практик', desc: 'Тесты и задания', color: '#34d399', chip: '🎯 Практик' },
+            social: { emoji: '👥', name: 'Социальный', desc: 'Обсуждения', color: '#38bdf8', chip: '👥 Социальный' },
+            research: { emoji: '🔬', name: 'Исследователь', desc: 'Глубокое изучение', color: '#fbbf24', chip: '🔬 Исследователь' },
+        };
+
+        /* ── Course category icons ── */
+        const CAT_ICONS = {
+            python: '🐍', javascript: '⚡', css: '🎨', html: '🌐', java: '☕',
+            'machine learning': '🤖', ml: '🤖', excel: '📊', english: '🇬🇧',
+            algebra: '📐', data: '📈', business: '💼', web: '🌐', design: '🎨',
+        };
+        function getCatIcon(title = '') {
+            const t = title.toLowerCase();
+            for (const [key, icon] of Object.entries(CAT_ICONS)) if (t.includes(key)) return icon;
+            return '📚';
+        }
+
+        let SC = null, RC = null;
+
+        /* ════════════════════════
+           MAIN LOAD
+        ════════════════════════ */
+        async function load() {
+            const nm = localStorage.getItem('name') || '?';
+            document.getElementById('ph-av').textContent = nm.charAt(0).toUpperCase();
+            document.getElementById('ph-name').textContent = nm;
+            document.getElementById('ph-email').textContent = localStorage.getItem('email') || '';
+
+            const [eRes, tRes, pRes] = await Promise.all([
+                authFetch('/dashboard/enrollments'),
+                authFetch('/dashboard/testresults'),
+                authFetch('/dashboard/profile'),
+            ]);
+            const enr = eRes ? await eRes.json() : [];
+            const tst = tRes ? await tRes.json() : [];
+            const prf = pRes ? await pRes.json() : null;
+
+            const avg = tst.length ? Math.round(tst.reduce((s, t) => s + t.score, 0) / tst.length) : 0;
+
+            /* Stats */
+            document.getElementById('s-courses').textContent = enr.length;
+            document.getElementById('s-comp').textContent = enr.filter(e => e.progress >= 100).length;
+            document.getElementById('s-score').textContent = avg ? avg + '%' : '—';
+            document.getElementById('s-tests').textContent = tst.length;
+            document.getElementById('sb-inprogress').textContent = enr.filter(e => e.progress > 0 && e.progress < 100).length;
+
+            /* Badges */
+            const bdgs = [];
+            if (enr.length >= 1) bdgs.push('Первый курс');
+            if (enr.filter(e => e.progress >= 100).length) bdgs.push('Завершил курс');
+            if (avg >= 80) bdgs.push('Отличник');
+            if (tst.length >= 3) bdgs.push('Активный');
+            document.getElementById('ph-badges').innerHTML = bdgs.map(b => `<span class="ph-badge">${b}</span>`).join('');
+
+            /* Learning style */
+            const st = prf?.dominantStyle || 'reading';
+            const sc = STYLE_CFG[st] || STYLE_CFG.reading;
+            document.getElementById('ph-style-chip').textContent = sc.chip;
+            document.getElementById('st-emoji').textContent = sc.emoji;
+            document.getElementById('st-name').textContent = sc.name;
+            document.getElementById('st-name').style.color = sc.color;
+            document.getElementById('st-desc').textContent = sc.desc;
+
+            /* Radar chart */
+            const vs = [
+                Math.max((prf?.ratioText || 0) * 100, 5),
+                Math.max((prf?.ratioVideo || 0) * 100, 5),
+                Math.max((prf?.ratioQuiz || 0) * 100, 5),
+                10, 10,
+            ];
+            if (RC) RC.destroy();
+            RC = new Chart(document.getElementById('radar-chart'), {
+                type: 'radar',
+                data: {
+                    labels: ['Читатель', 'Визуал', 'Практик', 'Социальный', 'Исследователь'],
+                    datasets: [{
+                        data: vs,
+                        backgroundColor: 'rgba(108,99,255,.15)',
+                        borderColor: '#6c63ff',
+                        pointBackgroundColor: '#6c63ff',
+                        borderWidth: 2,
+                    }],
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            beginAtZero: true, max: 100,
+                            ticks: { display: false },
+                            grid: { color: 'rgba(255,255,255,.05)' },
+                            angleLines: { color: 'rgba(255,255,255,.05)' },
+                            pointLabels: { font: { size: 10 }, color: 'rgba(255,255,255,.45)' },
+                        }
+                    },
+                },
+            });
+
+            /* Courses list */
+            const cr = document.getElementById('courses-rows');
+            if (!enr.length) {
+                cr.innerHTML = `<div style="text-align:center;padding:16px">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:10px">Ты ещё не записан ни на один курс</div>
+          <a href="/courses.html" class="btn" style="background:var(--accent);color:#fff;padding:7px 16px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;gap:6px;align-items:center">
+            <i class="bi bi-collection"></i>Выбрать курс</a>
+          </div>`;
+            } else {
+                cr.innerHTML = enr.map(e => `
+          <div class="course-row">
+            <div class="course-row-top">
+              <span class="course-row-name">${e.courseTitle}</span>
+              <span style="color:${e.progress >= 100 ? 'var(--green)' : 'var(--muted)'}">${e.progress}%</span>
+            </div>
+            <div class="progress"><div class="progress-fill" style="width:${e.progress}%"></div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--muted)">
+              <span>${e.completedModules || 0} из ${e.totalModules} модулей</span>
+              ${e.progress >= 100
+                        ? '<span style="color:var(--green)">✅ Завершён</span>'
+                        : `<a href="/course.html?id=${e.courseId}" style="color:var(--accent);font-weight:600">Продолжить →</a>`}
+            </div>
+          </div>`).join('');
+            }
+
+            /* Score chart */
+            if (!tst.length) {
+                document.getElementById('scores-chart').style.display = 'none';
+                document.getElementById('no-scores').style.display = 'block';
+            } else {
+                if (SC) SC.destroy();
+                SC = new Chart(document.getElementById('scores-chart'), {
+                    type: 'bar',
+                    data: {
+                        labels: tst.slice(-10).map((_, i) => '#' + (i + 1)),
+                        datasets: [{
+                            data: tst.slice(-10).map(t => t.score),
+                            backgroundColor: tst.slice(-10).map(t =>
+                                t.score >= 70 ? 'rgba(34,211,165,.8)' :
+                                    t.score >= 40 ? 'rgba(251,191,36,.8)' : 'rgba(96,165,250,.8)'),
+                            borderRadius: 6, borderSkipped: false,
+                        }],
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: 'rgba(255,255,255,.4)' } },
+                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,.4)' } },
+                        },
+                    },
+                });
+            }
+
+            /* ── AI INSIGHT (no Fail/risk) ── */
+            buildAiInsights(prf, enr, tst, avg, st);
+
+            /* ── Style-based tips ── */
+            buildTips(st, enr, avg);
+
+            /* ── Recommendations ── */
+            await loadRecommendations(st);
+        }
+
+        /* ════════════════════════════════════
+           AI INSIGHTS — positive framing only
+        ════════════════════════════════════ */
+        function buildAiInsights(prf, enr, tst, avg, style) {
+            const insights = [];
+            const inProgress = enr.filter(e => e.progress > 0 && e.progress < 100).length;
+            const completed = enr.filter(e => e.progress >= 100).length;
+
+            // Progress insight
+            if (completed > 0) {
+                insights.push({ icon: '🏆', text: `Завершено курсов: ${completed}`, sub: 'Отличный результат — продолжай в том же темпе!' });
+            } else if (inProgress > 0) {
+                insights.push({ icon: '🚀', text: `${inProgress} курс${inProgress > 1 ? 'а' : ''} в процессе`, sub: 'Продолжай — ты на правильном пути!' });
+            } else {
+                insights.push({ icon: '📚', text: 'Начни первый курс', sub: 'Запишись и AI подберёт материал под твой стиль' });
+            }
+
+            // Score insight — no thresholds with "fail"
+            if (avg >= 80) {
+                insights.push({ icon: '⭐', text: `Средний балл: ${avg}%`, sub: 'Отличная успеваемость! Попробуй курсы уровня Advanced.' });
+            } else if (avg >= 60) {
+                insights.push({ icon: '📈', text: `Средний балл: ${avg}%`, sub: 'Хороший прогресс. Практика поможет закрепить знания.' });
+            } else if (avg > 0) {
+                insights.push({ icon: '💪', text: `Средний балл: ${avg}%`, sub: 'Каждая попытка делает тебя сильнее. Повтори пройденные темы.' });
+            }
+
+            // Style insight
+            const styleTips = {
+                reading: { icon: '📖', text: 'Стиль: Читатель', sub: 'AI выделяет текстовые модули специально для тебя' },
+                visual: { icon: '🎬', text: 'Стиль: Визуал', sub: 'Видеолекции засвечены в твоих курсах знаком AI ✦' },
+                interactive: { icon: '🎯', text: 'Стиль: Практик', sub: 'Квизы и задания — твой главный инструмент роста' },
+                social: { icon: '👥', text: 'Стиль: Социальный', sub: 'Используй AI помощника для обсуждения тем' },
+                research: { icon: '🔬', text: 'Стиль: Исследователь', sub: 'Изучай дополнительные материалы внутри курсов' },
+            };
+            if (styleTips[style]) insights.push(styleTips[style]);
+
+            document.getElementById('ai-insights').innerHTML = insights.map(i => `
+        <div class="insight-row">
+          <div class="insight-icon">${i.icon}</div>
+          <div>
+            <div class="insight-text">${i.text}</div>
+            <div class="insight-sub">${i.sub}</div>
+          </div>
+        </div>`).join('');
+        }
+
+        /* ════════════════════════
+           STYLE-BASED TIPS
+        ════════════════════════ */
+        function buildTips(style, enr, avg) {
+            const tips = [];
+
+            const styleTipMap = {
+                reading: '📖 Ты — Читатель. Открывай текстовые модули первыми — они дают тебе наибольшую отдачу.',
+                visual: '🎬 Ты — Визуал. Видеолекции и инфографика — твой формат. AI помечает их знаком ✦.',
+                interactive: '🎯 Ты — Практик. Сразу переходи к квизам и заданиям — так знания закрепляются лучше.',
+                social: '👥 Ты — Социальный. Задавай вопросы AI помощнику внутри курса — диалог помогает тебе.',
+                research: '🔬 Ты — Исследователь. Не останавливайся на основном материале — ищи дополнительные источники.',
+            };
+            if (styleTipMap[style]) tips.push(styleTipMap[style]);
+
+            if (avg >= 80) tips.push('🌟 Твои результаты выше среднего — попробуй курсы уровня Advanced.');
+            else if (avg >= 60) tips.push('✅ Хорошая успеваемость. Регулярная практика закрепит результат.');
+            else if (avg > 0) tips.push('💪 Повтори пройденные модули — второй проход всегда даёт лучший результат.');
+
+            if (!enr.length) tips.push('📚 Запишись на первый курс — AI сразу начнёт адаптироваться под тебя.');
+
+            document.getElementById('tips-list').innerHTML = tips.map(t => `
+        <div class="tip-item"><span>${t}</span></div>`).join('') ||
+                '<div style="color:var(--muted);font-size:13px">Начни обучение — AI соберёт советы для тебя</div>';
+        }
+
+        /* ════════════════════════════════════════
+           RECOMMENDATIONS — from /api/recommend
+        ════════════════════════════════════════ */
+        async function loadRecommendations(style) {
+            const grid = document.getElementById('rec-grid');
+            try {
+                const res = await authFetch('/api/recommend');
+                if (!res.ok) throw new Error('rec error');
+                const recs = await res.json();
+
+                if (!recs.length) {
+                    grid.innerHTML = `<div class="rec-empty">
+            🎉 Отлично! Ты записан на все доступные курсы.<br>
+            <a href="/courses.html" style="color:var(--accent)">Смотреть все курсы →</a>
+          </div>`;
+                    return;
+                }
+
+                grid.innerHTML = recs.map(r => `
+          <a href="/course.html?id=${r.id}" class="rec-card">
+            <div class="rec-card-icon">${getCatIcon(r.title)}</div>
+            <div class="rec-card-body">
+              <div class="rec-card-title">${r.title}</div>
+              <div class="rec-card-reason">${r.reason}</div>
+              <div class="rec-card-footer">
+                <span class="rec-tag">${r.tag || '⭐ Рекомендовано'}</span>
+                <span class="rec-match">✦ ${r.matchScore || 80}% совпадение</span>
+              </div>
+              <div class="match-bar">
+                <div class="match-fill" style="width:${Math.min(100, r.matchScore || 80)}%"></div>
+              </div>
+            </div>
+            <i class="bi bi-arrow-right rec-arrow"></i>
+          </a>`).join('');
+
+            } catch (e) {
+                grid.innerHTML = `<div class="rec-empty">
+          <a href="/courses.html" style="color:var(--accent)">Перейти к каталогу курсов →</a>
+        </div>`;
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>

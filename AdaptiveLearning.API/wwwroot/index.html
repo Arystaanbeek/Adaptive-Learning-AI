@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AdaptiveLearn AI — Адаптивная образовательная платформа</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── THEMES ── */
+[data-theme="dark"] {
+  --bg:        #0f1117;
+  --surface:   #1a1d27;
+  --surface2:  #22263a;
+  --border:    rgba(255,255,255,.08);
+  --text:      #e8eaf0;
+  --muted:     #7b7f96;
+  --accent:    #6c63ff;
+  --accent2:   #ff6b9d;
+  --green:     #22d3a5;
+  --yellow:    #fbbf24;
+  --hero-from: #1a1060;
+  --hero-to:   #2d1b6e;
+  --card-bg:   rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --step-bg:   rgba(108,99,255,.1);
+}
+[data-theme="light"] {
+  --bg:        #f4f6ff;
+  --surface:   #ffffff;
+  --surface2:  #eef0fa;
+  --border:    rgba(0,0,0,.08);
+  --text:      #1a1d27;
+  --muted:     #6b7280;
+  --accent:    #6c63ff;
+  --accent2:   #ff6b9d;
+  --green:     #059669;
+  --yellow:    #d97706;
+  --hero-from: #4338ca;
+  --hero-to:   #7c3aed;
+  --card-bg:   rgba(255,255,255,.9);
+  --card-border:rgba(108,99,255,.15);
+  --step-bg:   rgba(108,99,255,.08);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .3s, color .3s;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 14px 40px;
+  display: flex; align-items: center; gap: 20px;
+  background: rgba(15,17,23,.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+}
+[data-theme="light"] .navbar {
+  background: rgba(255,255,255,.85);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.logo-text { font-weight: 800; font-size: 1.05rem; color: var(--text); }
+.nav-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.nav-link { padding: 7px 14px; border-radius: 9px; font-size: 14px; font-weight: 500;
+  color: var(--muted); text-decoration: none; transition: all .15s; }
+.nav-link:hover { color: var(--text); background: var(--surface2); }
+.nav-btn { padding: 8px 18px; border-radius: 9px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit; border: none; transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.nav-btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.nav-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.nav-btn-solid { background: var(--accent); color: #fff; }
+.nav-btn-solid:hover { background: #7c75ff; transform: translateY(-1px); }
+.theme-toggle { width: 36px; height: 36px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); font-size: 1rem; transition: all .15s; }
+.theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+.lang-group { display: flex; gap: 3px; }
+.lang-btn { background: transparent; border: 1px solid var(--border); color: var(--muted);
+  font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 7px; cursor: pointer;
+  font-family: inherit; transition: all .15s; }
+.lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 50%, #1a0a3e 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+  padding: 100px 40px 60px;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(108,99,255,.3) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(255,107,157,.2) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: .04;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.hero-content { max-width: 1200px; margin: 0 auto; width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.9); font-size: 12px; font-weight: 600;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; }
+.hero-badge i { color: #fbbf24; }
+.hero-title { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 18px; }
+.hero-title span { color: #fbbf24; }
+.hero-desc { font-size: 16px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+.hero-btn-primary { background: #fff; color: #1a1060; padding: 13px 28px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: inherit;
+  transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,255,255,.2); }
+.hero-btn-outline { background: transparent; color: #fff; padding: 13px 28px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; border: 1.5px solid rgba(255,255,255,.3); cursor: pointer;
+  font-family: inherit; transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.hero-btn-outline:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.05); }
+.hero-features { display: flex; gap: 20px; flex-wrap: wrap; }
+.hero-feat { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,.6); }
+.hero-feat i { color: var(--green); }
+
+/* ── HERO CARD ── */
+.hero-card { background: rgba(255,255,255,.07); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 20px; padding: 24px; }
+.hero-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.hero-card-avatar { width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; }
+.hero-card-name { font-size: 15px; font-weight: 700; color: #fff; }
+.hero-card-sub  { font-size: 12px; color: rgba(255,255,255,.5); }
+.hero-card-badge { margin-left: auto; background: var(--green); color: #fff;
+  font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.hero-progress-label { display: flex; justify-content: space-between; font-size: 13px;
+  color: rgba(255,255,255,.7); margin-bottom: 8px; }
+.hero-progress-bar { height: 6px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+.hero-progress-fill { height: 100%; background: linear-gradient(90deg,var(--accent),var(--green)); border-radius: 3px; width: 75%; }
+.hero-ai-rec { background: rgba(108,99,255,.15); border: 1px solid rgba(108,99,255,.3);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; }
+.hero-ai-label { font-size: 11px; font-weight: 700; color: #a78bfa; margin-bottom: 4px; }
+.hero-ai-text  { font-size: 13px; color: rgba(255,255,255,.7); }
+.hero-metrics  { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.hero-metric   { text-align: center; }
+.hero-metric-num  { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+.hero-metric-lbl  { font-size: 11px; color: rgba(255,255,255,.4); }
+
+/* ── FLOATING BADGES ── */
+.float-badge {
+  position: absolute; background: rgba(255,255,255,.08); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 12px;
+  padding: 8px 14px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.8);
+  display: flex; align-items: center; gap: 6px; animation: float 3s ease-in-out infinite;
+}
+.float-badge:nth-child(2) { animation-delay: 1s; }
+.float-badge:nth-child(3) { animation-delay: 2s; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ── SECTIONS ── */
+.section { padding: 80px 40px; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--step-bg);
+  color: var(--accent); font-size: 12px; font-weight: 700; padding: 5px 14px;
+  border-radius: 20px; margin-bottom: 14px; }
+.section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; margin-bottom: 12px; }
+.section-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.6; }
+
+/* ── STATS BAND ── */
+.stats-band { background: linear-gradient(135deg,var(--accent),var(--accent2));
+  padding: 40px; border-radius: 20px; display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 20px; text-align: center; }
+.stats-band-num { font-size: 2.2rem; font-weight: 900; color: #fff; }
+.stats-band-lbl { font-size: 13px; color: rgba(255,255,255,.7); margin-top: 4px; }
+
+/* ── FEATURES ── */
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 48px; }
+.feat-card { background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 18px; padding: 28px; transition: transform .2s, border-color .2s; }
+.feat-card:hover { transform: translateY(-4px); border-color: rgba(108,99,255,.4); }
+.feat-icon { width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px; }
+.feat-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.feat-desc  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── STEPS ── */
+.steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; position: relative; }
+.step-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 28px; }
+.step-num { width: 44px; height: 44px; border-radius: 12px; background: var(--accent);
+  color: #fff; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center;
+  justify-content: center; margin-bottom: 16px; }
+.step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.step-desc  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── STYLES GRID ── */
+.styles-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-top: 40px; }
+.style-card { background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 20px; text-align: center; transition: transform .2s, border-color .2s; cursor: default; }
+.style-card:hover { transform: translateY(-4px); border-color: rgba(108,99,255,.4); }
+.style-emoji { font-size: 2.2rem; display: block; margin-bottom: 10px; }
+.style-name  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.style-desc  { font-size: 12px; color: var(--muted); }
+
+/* ── CTA ── */
+.cta-section { background: linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius: 24px; padding: 60px; text-align: center; position: relative; overflow: hidden; }
+.cta-section::before { content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 70% 50%,rgba(255,255,255,.1),transparent 60%); }
+.cta-title { font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 12px; position: relative; }
+.cta-sub   { font-size: 16px; color: rgba(255,255,255,.8); margin-bottom: 32px; position: relative; }
+.cta-btn   { background: #fff; color: var(--accent); padding: 14px 36px; border-radius: 12px;
+  font-size: 16px; font-weight: 800; border: none; cursor: pointer; font-family: inherit;
+  transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; position: relative; }
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.2); }
+
+/* ── FOOTER ── */
+footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px 40px;
+  display: flex; align-items: center; justify-content: space-between; }
+.footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
+.footer-text  { font-size: 13px; color: var(--muted); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .features-grid, .steps-grid { grid-template-columns: 1fr 1fr; }
+  .styles-grid { grid-template-columns: repeat(3,1fr); }
+  .stats-band { grid-template-columns: repeat(2,1fr); }
+  .hero { padding: 100px 20px 60px; }
+  .section { padding: 60px 20px; }
+  .navbar { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a class="nav-logo" href="/index.html">
+    <div class="logo-icon">🎓</div>
+    <span class="logo-text">AdaptiveLearn AI</span>
+  </a>
+  <div class="nav-links">
+    <div class="lang-group">
+      <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="kz" onclick="setLang('kz')">KZ</button>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Сменить тему">
+      <i class="bi bi-sun" id="theme-icon"></i>
+    </button>
+    <div id="nav-auth-area"></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+
+  <!-- Floating badges -->
+  <div class="float-badge" style="top:15%;left:8%"><i class="bi bi-cpu" style="color:#6c63ff"></i> AI адаптация</div>
+  <div class="float-badge" style="bottom:20%;left:5%"><i class="bi bi-star-fill" style="color:#fbbf24"></i> ROC-AUC 0.95</div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge"><i class="bi bi-lightning-charge-fill"></i>Адаптивное обучение нового поколения</div>
+      <h1 class="hero-title">Платформа которая <span>учится вместе</span> с тобой</h1>
+      <p class="hero-desc">Система определяет твой стиль восприятия, предсказывает успеваемость и автоматически подбирает следующий материал под твои слабые стороны.</p>
+      <div class="hero-btns">
+        <a href="/register.html" class="hero-btn-primary" id="hero-main-btn">
+          <i class="bi bi-rocket-takeoff"></i>Начать бесплатно
+        </a>
+        <a href="/courses.html" class="hero-btn-outline">
+          <i class="bi bi-collection"></i>Смотреть курсы
+        </a>
+      </div>
+      <div class="hero-features">
+        <div class="hero-feat"><i class="bi bi-check-circle-fill"></i>Бесплатная регистрация</div>
+        <div class="hero-feat"><i class="bi bi-check-circle-fill"></i>AI адаптация в реальном времени</div>
+        <div class="hero-feat"><i class="bi bi-check-circle-fill"></i>Персональные рекомендации</div>
+      </div>
+    </div>
+    <div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <div class="hero-card-avatar">А</div>
+          <div>
+            <div class="hero-card-name">Алия Назарова</div>
+            <div class="hero-card-sub">Студент · Визуал</div>
+          </div>
+          <div class="hero-card-badge">Pass 87%</div>
+        </div>
+        <div class="hero-progress-label">
+          <span>Введение в Python</span><span style="color:#22d3a5">75%</span>
+        </div>
+        <div class="hero-progress-bar">
+          <div class="hero-progress-fill"></div>
+        </div>
+        <div class="hero-ai-rec">
+          <div class="hero-ai-label"><i class="bi bi-cpu me-1"></i>AI рекомендует</div>
+          <div class="hero-ai-text">Поскольку ты визуал — следующий модуль подобран в формате видео</div>
+        </div>
+        <div class="hero-metrics">
+          <div class="hero-metric"><div class="hero-metric-num">0.95</div><div class="hero-metric-lbl">ROC-AUC</div></div>
+          <div class="hero-metric"><div class="hero-metric-num" style="color:#22d3a5">35</div><div class="hero-metric-lbl">Признаков</div></div>
+          <div class="hero-metric"><div class="hero-metric-num" style="color:#fbbf24">5</div><div class="hero-metric-lbl">Стилей</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section" style="padding-top:60px;padding-bottom:60px">
+  <div class="section-inner">
+    <div class="stats-band">
+      <div><div class="stats-band-num">35</div><div class="stats-band-lbl">AI признаков модели</div></div>
+      <div><div class="stats-band-num">0.95</div><div class="stats-band-lbl">ROC-AUC точность</div></div>
+      <div><div class="stats-band-num">5</div><div class="stats-band-lbl">Стилей восприятия</div></div>
+      <div><div class="stats-band-num">4</div><div class="stats-band-lbl">Класса успеваемости</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-tag"><i class="bi bi-stars"></i>Возможности</div>
+    <h2 class="section-title">Как работает адаптация</h2>
+    <p class="section-sub">Система анализирует твоё поведение и подстраивает обучение в реальном времени</p>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(108,99,255,.15);color:#6c63ff"><i class="bi bi-eye"></i></div>
+        <div class="feat-title">Определяет стиль</div>
+        <div class="feat-desc">Анализирует сколько времени ты тратишь на видео, текст и тесты. Строит уникальный профиль восприятия.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(251,191,36,.15);color:#fbbf24"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="feat-title">Предсказывает результат</div>
+        <div class="feat-desc">Random Forest модель с ROC-AUC 0.95 предсказывает Pass, Fail, Distinction или Withdrawn.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(34,211,165,.15);color:#22d3a5"><i class="bi bi-arrow-repeat"></i></div>
+        <div class="feat-title">Подбирает материал</div>
+        <div class="feat-desc">После каждого теста автоматически выбирает следующий модуль под твои слабые стороны и стиль.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(255,107,157,.15);color:#ff6b9d"><i class="bi bi-chat-dots"></i></div>
+        <div class="feat-title">AI помощник</div>
+        <div class="feat-desc">Задавай вопросы прямо во время курса — Gemini AI объяснит тему в твоём стиле восприятия.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(96,165,250,.15);color:#60a5fa"><i class="bi bi-speedometer2"></i></div>
+        <div class="feat-title">Личный дашборд</div>
+        <div class="feat-desc">Отслеживай прогресс, смотри радар стилей, получай персональные рекомендации от AI.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(167,139,250,.15);color:#a78bfa"><i class="bi bi-shield-check"></i></div>
+        <div class="feat-title">Контроль администратора</div>
+        <div class="feat-desc">Администратор видит всех студентов в зоне риска и может направить их за помощью.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="section" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-tag"><i class="bi bi-list-ol"></i>Начало</div>
+    <h2 class="section-title">Начни за 3 шага</h2>
+    <p class="section-sub">Регистрация займёт 30 секунд, а AI начнёт работать сразу</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Зарегистрируйся</div>
+        <div class="step-desc">Создай аккаунт бесплатно. Никаких карт и подписок — просто имя и email.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Выбери курс</div>
+        <div class="step-desc">Запишись на курс из каталога и начни проходить модули в удобном темпе.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">AI адаптирует путь</div>
+        <div class="step-desc">После каждого теста система определяет твой стиль и подбирает следующий контент специально для тебя.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STYLES -->
+<section class="section" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-tag"><i class="bi bi-person-bounding-box"></i>Стили</div>
+    <h2 class="section-title">5 стилей восприятия</h2>
+    <p class="section-sub">Система определяет твой доминирующий стиль и подбирает контент</p>
+    <div class="styles-grid">
+      <div class="style-card">
+        <span class="style-emoji">📖</span>
+        <div class="style-name">Читатель</div>
+        <div class="style-desc">Тексты и статьи</div>
+      </div>
+      <div class="style-card">
+        <span class="style-emoji">👁️</span>
+        <div class="style-name">Визуал</div>
+        <div class="style-desc">Видео и графики</div>
+      </div>
+      <div class="style-card">
+        <span class="style-emoji">🎮</span>
+        <div class="style-name">Практик</div>
+        <div class="style-desc">Тесты и задачи</div>
+      </div>
+      <div class="style-card">
+        <span class="style-emoji">👥</span>
+        <div class="style-name">Социальный</div>
+        <div class="style-desc">Обсуждения</div>
+      </div>
+      <div class="style-card">
+        <span class="style-emoji">🔬</span>
+        <div class="style-name">Исследователь</div>
+        <div class="style-desc">Глубокое изучение</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0">
+  <div class="section-inner">
+    <div class="cta-section">
+      <h2 class="cta-title">Готов начать адаптивное обучение?</h2>
+      <p class="cta-sub">Зарегистрируйся и AI сразу начнёт подстраивать обучение под тебя</p>
+      <a href="/register.html" class="cta-btn" id="cta-main-btn">
+        <i class="bi bi-rocket-takeoff"></i>Зарегистрироваться бесплатно
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><div class="logo-icon" style="width:28px;height:28px;font-size:.85rem">🎓</div>AdaptiveLearn AI</div>
+  <div class="footer-text">Диссертация · OULAD Dataset · Random Forest Model · ROC-AUC 0.95</div>
+</footer>
+
+<script>
+// ── THEME ──────────────────────────────────────────────
+const html      = document.documentElement;
+const themeBtn  = document.getElementById('theme-btn');
+const themeIcon = document.getElementById('theme-icon');
+
+function applyTheme(t) {
+  html.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  themeIcon.className = t === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+  // Update hero card for light theme
+  if (t === 'light') {
+    document.querySelector('.hero-card').style.background = 'rgba(255,255,255,.15)';
+  }
+}
+function toggleTheme() {
+  applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+// ── LANG ──────────────────────────────────────────────
+function setLang(lang) {
+  localStorage.setItem('lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang));
+}
+const savedLang = localStorage.getItem('lang') || 'ru';
+document.querySelectorAll('.lang-btn').forEach(b =>
+  b.classList.toggle('active', b.dataset.lang === savedLang));
+
+// ── AUTH STATE ─────────────────────────────────────────
+const token = localStorage.getItem('token');
+const role  = localStorage.getItem('role');
+const name  = localStorage.getItem('name');
+
+const navArea = document.getElementById('nav-auth-area');
+
+if (token) {
+  // Уже залогинен — показываем кнопки перехода, не кнопки входа
+  navArea.innerHTML = `
+    <a href="${role==='Admin'?'/admin.html':'/courses.html'}" class="nav-btn nav-btn-outline">
+      <i class="bi bi-collection"></i>Мои курсы
+    </a>
+    <a href="/dashboard.html" class="nav-btn nav-btn-solid">
+      <i class="bi bi-speedometer2"></i>Дашборд
+    </a>`;
+
+  // Меняем CTA кнопки на "перейти к курсам"
+  document.getElementById('hero-main-btn').href = '/courses.html';
+  document.getElementById('hero-main-btn').innerHTML = '<i class="bi bi-play-fill"></i>Перейти к курсам';
+  document.getElementById('cta-main-btn').href = '/courses.html';
+  document.getElementById('cta-main-btn').innerHTML = '<i class="bi bi-collection"></i>Мои курсы';
+
+  // Обновляем hero card с реальным именем
+  document.querySelector('.hero-card-name').textContent = name || 'Студент';
+} else {
+  // Не залогинен — показываем кнопки входа/регистрации
+  navArea.innerHTML = `
+    <a href="/login.html" class="nav-btn nav-btn-outline">Войти</a>
+    <a href="/register.html" class="nav-btn nav-btn-solid">
+      <i class="bi bi-person-plus"></i>Регистрация
+    </a>`;
+}
+
+// Плавная прокрутка
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
