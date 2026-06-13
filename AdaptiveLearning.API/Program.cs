@@ -67,5 +67,5 @@ app.UseAuthorization();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapControllers();
-app.Urls.Add("http://localhost:5000");
+//app.Urls.Add("http://localhost:5000");
 app.Run();

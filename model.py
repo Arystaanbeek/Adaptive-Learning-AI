@@ -41,11 +41,28 @@ class AdaptiveModel:
 
     def load(self):
         model_path = Path(__file__).parent / "oulad_adaptive_model.pkl"
+
         if not model_path.exists():
-            raise FileNotFoundError(f"Модель не найдена: {model_path}")
+            print("Downloading model from Hugging Face...")
+
+            import requests
+
+            url = "https://huggingface.co/arystaanbeek/adaptive-learning-model/resolve/main/oulad_adaptive_model.pkl"
+
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
+
+            with open(model_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+
+            print("Model downloaded.")
+
         with open(model_path, "rb") as f:
             self.model = pickle.load(f)
-        print(f"Модель загружена. Классы: {self.model.classes_}")
+
+        print(f"Model loaded. Classes: {self.model.classes_}")
 
     def predict(self, features: dict) -> dict:
         # Собираем вектор в нужном порядке
